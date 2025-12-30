@@ -21,8 +21,12 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import React from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/contexts/session-contexts";
 
 export default function Home() {
+  const router = useRouter();
+  const { isAuthenticated } = useSession();
   const emotions = [
     { value: 0, label: "😔 Down", color: "from-blue-500/50" },
     { value: 25, label: "😊 Content", color: "from-green-500/50" },
@@ -33,7 +37,6 @@ export default function Home() {
 
   const [emotion, setEmotion] = useState(50);
   const [mounted, setMounted] = useState(false);
-  const [dialogue, showDialogue] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -41,6 +44,14 @@ export default function Home() {
 
   const currentEmotion =
     emotions.find((em) => Math.abs(emotion - em.value) < 15) || emotions[2];
+
+  const handleBeginJourney = () => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    } else {
+      router.push("/signup");
+    }
+  };
 
   const features = [
     {
@@ -77,19 +88,19 @@ export default function Home() {
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section */}
       <section
-        className="relative min-h-[90vh] mt-20 flex flex-col items-center
-      justify-center py-12 px-4
+        className="relative min-h-[90vh] mt-16 md:mt-20 flex flex-col items-center
+      justify-center py-8 md:py-12 px-4 sm:px-6
       "
       >
         {/* Enhanced Background Elements */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div
-            className={`absolute w-[500px] h-[500px] rounded-full blur-3xl
-          top-0 -left-20 transition-all duration-700 ease-in-out bg-gradient-to-r
+            className={`absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full blur-3xl
+          top-0 -left-10 md:-left-20 transition-all duration-700 ease-in-out bg-gradient-to-r
           ${currentEmotion.color} to-transparent opacity-60`}
           />
           <div
-            className="absolute w-[400px] h-[400px]
+            className="absolute w-[250px] h-[250px] md:w-[400px] md:h-[400px]
         rounded-full bg-secondary/10 blur-3xl bottom-0 right-0
         anime-pulse delay-700
         "
@@ -106,14 +117,14 @@ export default function Home() {
         >
           {/*Enhanced badge with subtle animation */}
           <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 sm:px-4 text-xs sm:text-sm border border-primary/20 bg-primary/5
          backdrop-blur-sm hover:border-primary/40 transition-all duration-300
          "
           >
-            <Waves className="w-4 h-4 animate-wave text-primary" />
+            <Waves className="w-3 h-3 sm:w-4 sm:h-4 animate-wave text-primary" />
             <span
-              className="relative text-foreground/90 dark:text-foreground after:content-[''] 
-            after:absolute after:bottom-0 after:left-0 after:w-full 
+              className="relative text-foreground/90 dark:text-foreground after:content-['']
+            after:absolute after:bottom-0 after:left-0 after:w-full
             after:h-[1px] after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300
             "
             >
@@ -122,32 +133,32 @@ export default function Home() {
           </div>
 
           {/* Enhanced main heading with smoother gradient */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-plus-jakarta tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-plus-jakarta tracking-tight px-4">
             <span className="inline-block bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent [text-shadow:_0_1px_0_rgb(0_0_0_/_20%)] hover:to-primary transition-all duration-300">
-              Find Peace
+              Your Safe Space
             </span>
             <br />
             <span className="inline-block mt-2 bg-gradient-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
-              of Mind
+              for Healing
             </span>
           </h1>
           {/* Enhanced description with better readability */}
-          <p className="max-w-[600px] mx-auto text-base md:text-lg text-muted-foreground leading-relaxed tracking-wide">
+          <p className="max-w-[600px] mx-auto text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed tracking-wide px-4">
             Experience a new way of emotional support. Our AI companion is here
             to listen, understand, and guide you through life's journey.
           </p>
 
           <motion.div
-            className="w-full max-w-[600px] mx-auto space-y-6 py-8"
+            className="w-full max-w-[600px] mx-auto space-y-4 sm:space-y-6 py-6 sm:py-8 px-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             <div className="space-y-2 text-center">
-              <p className="text-sm text-muted-foreground/80 font-medium">
+              <p className="text-xs sm:text-sm text-muted-foreground/80 font-medium">
                 Whatever you're feeling, we're here to listen
               </p>
-              <div className="flex justify-between items-center px-2">
+              <div className="flex justify-between items-center px-2 gap-1">
                 {emotions.map((em) => (
                   <div
                     key={em.value}
@@ -160,10 +171,10 @@ export default function Home() {
               }`}
                     onClick={() => setEmotion(em.value)}
                   >
-                    <div className="text-2xl transform-gpu">
+                    <div className="text-xl sm:text-2xl transform-gpu">
                       {em.label.split(" ")[0]}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1 font-medium">
+                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 font-medium">
                       {em.label.split(" ")[1]}
                     </div>
                   </div>
@@ -184,42 +195,42 @@ export default function Home() {
               />
             </div>
             <div className="text-center">
-              <p className="text-sm text-muted-foreground animate-pulse">
+              <p className="text-xs sm:text-sm text-muted-foreground animate-pulse">
                 Slide to express how you're feeling today
               </p>
             </div>
           </motion.div>
 
           {/* Enhanced CTA button and welcome dialog */}
-          <motion.div>
+          <motion.div className="px-4">
             <Button
               size="lg"
-              onClick={() => showDialogue(true)}
-              className="relative group h-12 px-8 rounded-full
-         bg-gradient-to-r from-primary via-primary/90 to-secondary 
+              onClick={handleBeginJourney}
+              className="relative group h-11 sm:h-12 px-6 sm:px-8 rounded-full text-sm sm:text-base
+         bg-gradient-to-r from-primary via-primary/90 to-secondary
          hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500 hover:shadow-xl hover:shadow-primary/30"
             >
               <span className="relative z-10 font-medium flex items-center gap-2">
-                Begin Your Journey
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                {isAuthenticated ? "Go to Dashboard" : "Begin Your Journey"}
+                <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </span>
             </Button>
           </motion.div>
         </motion.div>
       </section>
       {/* features grid */}
-      <section className="relative py-20 px-4 overflow-hidden">
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <motion.div className="text-center mb-16 space-y-4 text-white ">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
-              How Aura Helps You
+          <motion.div className="text-center mb-8 sm:mb-12 md:mb-16 space-y-3 sm:space-y-4 text-white">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
+              How Lumina Helps You
             </h2>
-            <p className="text-foreground dark:text-foreground/95 max-w-2xl mx-auto font-medium text-lg">
+            <p className="text-foreground dark:text-foreground/95 max-w-2xl mx-auto font-medium text-sm sm:text-base md:text-lg px-4">
               Experience a new kind of emotional support, powered by empathetic
               AI
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 relative">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -228,22 +239,22 @@ export default function Home() {
                 transition={{ delay: feature.delay, duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <Card className="group relative overflow-hidden border border-primary/10 hover:border-primary/20 transition-all duration-300 h-[200px] bg-card/30 dark:bg-card/80 backdrop-blur-sm">
+                <Card className="group relative overflow-hidden border border-primary/10 hover:border-primary/20 transition-all duration-300 h-auto sm:h-[200px] bg-card/30 dark:bg-card/80 backdrop-blur-sm">
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${feature.color} to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500 dark:group-hover:opacity-30`}
                   />
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-primary/10 dark:bg-primary/20 group-hover:bg-primary/20 dark:group-hover:bg-primary/30 transition-colors duration-300">
-                        <feature.icon className="w-5 h-5 text-primary dark:text-primary/90" />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 rounded-xl bg-primary/10 dark:bg-primary/20 group-hover:bg-primary/20 dark:group-hover:bg-primary/30 transition-colors duration-300">
+                        <feature.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary dark:text-primary/90" />
                       </div>
-                      <h3 className="font-semibold tracking-tight text-foreground/90 dark:text-foreground">
+                      <h3 className="font-semibold text-sm sm:text-base tracking-tight text-foreground/90 dark:text-foreground">
                         {feature.title}
                       </h3>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground/90 dark:text-muted-foreground leading-relaxed">
+                    <p className="text-xs sm:text-sm text-muted-foreground/90 dark:text-muted-foreground leading-relaxed">
                       {feature.description}
                     </p>
                   </CardContent>

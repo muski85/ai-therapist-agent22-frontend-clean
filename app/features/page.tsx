@@ -4,90 +4,93 @@ import { motion } from "framer-motion";
 import {
   Heart,
   Shield,
-  Users,
-  Clock,
   Brain,
-  Lightbulb,
-  Target,
   MessageCircle,
   Sparkles,
-  Award,
-  Globe,
+  LineChart,
+  Clock,
   Lock,
-  HeartHandshake,
   Zap,
-  BookOpen
+  HeartHandshake
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-export default function About() {
+export default function Features() {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const stats = [
-    { icon: Users, label: "Users Supported", value: "10K+", color: "from-blue-500/20" },
-    { icon: MessageCircle, label: "Conversations", value: "50K+", color: "from-green-500/20" },
-    { icon: Clock, label: "24/7 Availability", value: "Always", color: "from-purple-500/20" },
-    { icon: Globe, label: "Languages", value: "12+", color: "from-orange-500/20" }
-  ];
-
-  const values = [
+  const coreFeatures = [
     {
-      icon: Heart,
-      title: "Compassionate Care",
-      description: "Every interaction is designed with empathy and understanding at its core",
-      color: "from-rose-500/20"
-    },
-    {
-      icon: Shield,
-      title: "Privacy & Security",
-      description: "Your conversations are encrypted and completely confidential",
-      color: "from-emerald-500/20"
-    },
-    {
-      icon: BookOpen,
-      title: "Evidence-Based",
-      description: "All therapeutic approaches are backed by clinical research and best practices",
+      icon: MessageCircle,
+      title: "AI Therapy Chat",
+      description: "Engage in meaningful conversations with our empathetic AI therapist available 24/7",
       color: "from-blue-500/20"
     },
     {
-      icon: Target,
+      icon: LineChart,
+      title: "Mood Tracking",
+      description: "Monitor your emotional well-being with intuitive mood logging and insights",
+      color: "from-purple-500/20"
+    },
+    {
+      icon: Brain,
       title: "Personalized Support",
-      description: "Tailored therapeutic interventions adapted to your unique needs and goals",
+      description: "Receive tailored therapeutic interventions adapted to your unique needs",
+      color: "from-rose-500/20"
+    },
+    {
+      icon: Sparkles,
+      title: "Wellness Games",
+      description: "Interactive anxiety-relief exercises and mindfulness activities",
       color: "from-amber-500/20"
+    },
+    {
+      icon: Clock,
+      title: "24/7 Availability",
+      description: "Get support whenever you need it, without appointments or waiting lists",
+      color: "from-green-500/20"
+    },
+    {
+      icon: Lock,
+      title: "Privacy First",
+      description: "Your conversations are encrypted and completely confidential",
+      color: "from-emerald-500/20"
     }
   ];
 
-  const mission = [
-    {
-      icon: Lightbulb,
-      title: "Innovation in Mental Health",
-      description: "We're pioneering the next generation of accessible mental health support through advanced AI technology."
-    },
+  const benefits = [
     {
       icon: HeartHandshake,
-      title: "Breaking Down Barriers",
-      description: "Making quality mental health care available to everyone, regardless of location, time, or financial constraints."
+      title: "Accessible Care",
+      description: "Mental health support for everyone, regardless of location or schedule"
     },
     {
       icon: Zap,
-      title: "Immediate Support",
-      description: "Providing instant access to therapeutic support when you need it most, without waiting lists or appointments."
+      title: "Instant Response",
+      description: "No waiting rooms or appointments - get help the moment you need it"
+    },
+    {
+      icon: Shield,
+      title: "Safe Space",
+      description: "A judgment-free environment to express yourself openly and honestly"
     }
   ];
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] mt-20 flex flex-col items-center justify-center py-12 px-4">
+      <section className="relative min-h-[70vh] mt-16 md:mt-20 flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 px-4 sm:px-6">
         <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute w-[500px] h-[500px] rounded-full blur-3xl top-0 -left-20 bg-gradient-to-r from-primary/20 to-transparent opacity-60" />
-          <div className="absolute w-[400px] h-[400px] rounded-full bg-secondary/10 blur-3xl bottom-0 right-0" />
+          <div className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full blur-3xl top-0 -left-10 md:-left-20 bg-gradient-to-r from-blue-500/30 via-primary/20 to-transparent opacity-60 animate-pulse-gentle" />
+          <div className="absolute w-[250px] h-[250px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-br from-amber-500/20 via-secondary/10 to-transparent blur-3xl bottom-0 right-0 animate-pulse-gentle" />
+          <div className="absolute w-[200px] h-[200px] md:w-[350px] md:h-[350px] rounded-full bg-gradient-to-r from-emerald-500/15 to-transparent blur-3xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute inset-0 bg-background/80 backdrop-blur-3xl" />
         </div>
 
@@ -95,125 +98,48 @@ export default function About() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="text-center space-y-6 max-w-4xl mx-auto"
+          className="text-center space-y-4 sm:space-y-6 max-w-4xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm">
-            <Heart className="w-4 h-4 text-primary" />
-            <span className="text-foreground/90">AI-Powered Mental Health Support</span>
+          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 sm:px-4 text-xs sm:text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+            <span className="text-foreground/90">Powerful Mental Health Tools</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold font-plus-jakarta tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight px-4">
             <span className="bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent">
-              About Aura
+              Features
             </span>
             <br />
             <span className="bg-gradient-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
-              Your Mental Health Companion
+              Designed for Your Wellbeing
             </span>
           </h1>
 
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-            An AI-powered mental health support application built with Next.js and TypeScript. 
-            We provide accessible, 24/7 mental health assistance through advanced conversational AI, 
-            featuring intuitive chat interfaces, mood tracking, progress monitoring, and personalized wellness support.
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto px-4">
+            Everything you need to support your mental health journey, powered by advanced AI
+            and evidence-based therapeutic techniques.
           </p>
         </motion.div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative py-12 px-4 bg-muted/10">
+      {/* Core Features Section */}
+      <section className="relative py-12 sm:py-16 md:py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <Card className="text-center border border-primary/10 bg-card/50 backdrop-blur-sm">
-                  <CardContent className="pt-6">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${stat.color} to-transparent mx-auto mb-3 flex items-center justify-center`}>
-                      <stat.icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="relative py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div className="text-center mb-12 space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm border border-primary/20 bg-primary/5">
-              <Target className="w-4 h-4 text-primary" />
-              <span className="text-foreground/80">Our Mission</span>
+          <motion.div className="text-center mb-8 sm:mb-12 space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs sm:text-sm border border-primary/20 bg-primary/5">
+              <Brain className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-foreground/80">Core Features</span>
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent">
-              Transforming Mental Healthcare
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent px-4">
+              What Lumina Offers
             </h2>
-            <p className="text-foreground/80 max-w-3xl mx-auto text-lg">
-              We believe everyone deserves access to quality mental health support. 
-              Our mission is to democratize mental healthcare through innovative AI technology.
+            <p className="text-foreground/80 max-w-2xl mx-auto text-sm sm:text-base px-4">
+              Comprehensive tools and features designed to support your mental wellness.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {mission.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full border border-primary/10 bg-card/30 backdrop-blur-sm">
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-2 rounded-xl bg-primary/10">
-                        <item.icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-semibold text-foreground">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {item.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="relative py-16 px-4 bg-muted/20">
-        <div className="max-w-6xl mx-auto">
-          <motion.div className="text-center mb-12 space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm border border-primary/20 bg-primary/5">
-              <Award className="w-4 h-4 text-primary" />
-              <span className="text-foreground/80">Our Values</span>
-            </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent">
-              What Drives Us
-            </h2>
-            <p className="text-foreground/80 max-w-2xl mx-auto">
-              Our core values guide every decision we make and every feature we build.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+            {coreFeatures.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -222,18 +148,18 @@ export default function About() {
                 viewport={{ once: true }}
               >
                 <Card className="group relative overflow-hidden border border-primary/10 hover:border-primary/20 transition-all duration-300 h-full bg-card/30 backdrop-blur-sm">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${value.color} to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
-                  <CardHeader>
-                    <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300 w-fit mb-3">
-                      <value.icon className="w-6 h-6 text-primary" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <div className="p-2 sm:p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300 w-fit mb-2 sm:mb-3">
+                      <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-foreground">
-                      {value.title}
+                    <h3 className="font-semibold text-sm sm:text-base text-foreground">
+                      {feature.title}
                     </h3>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground/90 leading-relaxed">
-                      {value.description}
+                    <p className="text-xs sm:text-sm text-muted-foreground/90 leading-relaxed">
+                      {feature.description}
                     </p>
                   </CardContent>
                   <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -244,57 +170,77 @@ export default function About() {
         </div>
       </section>
 
-      {/* Technology Section */}
-      <section className="relative py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center space-y-6"
-          >
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm border border-primary/20 bg-primary/5">
-              <Brain className="w-4 h-4 text-primary" />
-              <span className="text-foreground/80">Advanced Technology</span>
+      {/* Benefits Section */}
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 bg-muted/20">
+        <div className="max-w-6xl mx-auto">
+          <motion.div className="text-center mb-8 sm:mb-12 space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs sm:text-sm border border-primary/20 bg-primary/5">
+              <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-foreground/80">Why Choose Lumina</span>
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent">
-              Built with Cutting-Edge AI
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent px-4">
+              Benefits That Matter
             </h2>
-            <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-primary/10 p-8">
-              <p className="text-foreground/80 text-lg leading-relaxed mb-6">
-                Aura is powered by Google's Gemini 2.0 Flash model, providing sophisticated natural language understanding 
-                and generation capabilities. Our multi-agent system coordinates specialized AI therapists to deliver 
-                comprehensive mental health support.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Badge variant="secondary" className="px-3 py-1">Next.js</Badge>
-                <Badge variant="secondary" className="px-3 py-1">TypeScript</Badge>
-                <Badge variant="secondary" className="px-3 py-1">Gemini 2.0 Flash</Badge>
-                <Badge variant="secondary" className="px-3 py-1">Multi-Agent AI</Badge>
-                <Badge variant="secondary" className="px-3 py-1">Real-time Processing</Badge>
-              </div>
-            </div>
+            <p className="text-foreground/80 max-w-3xl mx-auto text-sm sm:text-base md:text-lg px-4">
+              Mental health support that fits your life, not the other way around.
+            </p>
           </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full border border-primary/10 bg-card/30 backdrop-blur-sm hover:border-primary/20 transition-all">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                      <div className="p-1.5 sm:p-2 rounded-xl bg-primary/10">
+                        <benefit.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-semibold text-foreground">
+                        {benefit.title}
+                      </h3>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                      {benefit.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Bottom CTA */}
-      <section className="relative py-16 px-4 bg-muted/10">
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 bg-muted/10">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Ready to Start Your Mental Health Journey?
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent px-4">
+              Experience the Difference
             </h2>
-            <p className="text-foreground/80 text-lg max-w-2xl mx-auto">
-              Join thousands of users who have found support, guidance, and healing through our AI-powered platform.
+            <p className="text-foreground/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
+              Join our community and discover a new approach to mental wellness.
             </p>
+            <Button
+              onClick={() => router.push("/signup")}
+              size="lg"
+              className="h-11 sm:h-12 px-6 sm:px-8 rounded-full text-sm sm:text-base bg-gradient-to-r from-primary via-primary/90 to-secondary hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500"
+            >
+              Get Started Free
+            </Button>
           </motion.div>
         </div>
       </section>

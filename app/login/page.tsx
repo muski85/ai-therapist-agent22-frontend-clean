@@ -50,35 +50,35 @@ export default function LoginPage() {
     bg-gradient-to-br from-primary/10
     via-background to-secondary/30"
     >
-      <Container className="flex flex-col items-center justify-center w-full">
-        <Card className="w-full md:w-5/12 max-w-2xl p-8 md:p-10 rounded-3xl shadow-2xl border border-primary/10 bg-card/90 backdrop-blur-lg mt-12">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-1 tracking-tight">
+      <Container className="flex flex-col items-center justify-center w-full px-4">
+        <Card className="w-full sm:w-10/12 md:w-7/12 lg:w-5/12 max-w-2xl p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-3xl shadow-2xl border border-primary/10 bg-card/90 backdrop-blur-lg mt-8 sm:mt-12">
+          <div className="mb-4 sm:mb-6 text-center">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-1 tracking-tight">
               Sign In
             </h1>
-            <p className="text-base text-muted-foreground font-medium">
+            <p className="text-sm sm:text-base text-muted-foreground font-medium">
               Welcome back! Please sign in to continue your journey.
             </p>
           </div>
           {/* form component */}
-          <form className="space-y-6"
+          <form className="space-y-4 sm:space-y-6"
           onSubmit={handleSubmit}
           >
             <div className="space-y-3">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-base font-semibold mb-1"
+                  className="block text-sm sm:text-base font-semibold mb-1"
                 >
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    className="pl-12 py-2 text-base rounded-xl bg-card bg-opacity-80 border border-primary focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder:text-muted-foreground"
+                    className="pl-10 sm:pl-12 py-2 sm:py-2.5 text-sm sm:text-base rounded-xl bg-card bg-opacity-80 border border-primary focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder:text-muted-foreground"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -88,17 +88,17 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-base font-semibold mb-1"
+                  className="block text-sm sm:text-base font-semibold mb-1"
                 >
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                   <Input
                     id="password"
                     type="password"
                     placeholder="Enter your password"
-                    className="pl-12 py-2 text-base rounded-xl bg-card bg-opacity-80 border border-primary focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder:text-muted-foreground"
+                    className="pl-10 sm:pl-12 py-2 sm:py-2.5 text-sm sm:text-base rounded-xl bg-card bg-opacity-80 border border-primary focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder:text-muted-foreground"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -107,27 +107,27 @@ export default function LoginPage() {
               </div>
             </div>
             {error && (
-              <p className="text-red-500 text-base text-center font-medium">
+              <p className="text-red-500 text-sm sm:text-base text-center font-medium">
                 {error}
               </p>
             )}
             {/* Button */}
             <Button
-            className="w-full py-2 text-base rounded-xl font-bold bg-gradient-to-r
+            className="w-full py-2 sm:py-2.5 text-sm sm:text-base rounded-xl font-bold bg-gradient-to-r
             from-primary to-primary/80 shadow-md hover:from-primary/80 hover:to-primary
-            
+
             "
             size="lg"
             type="submit"
             disabled= {loading}
-            > 
-              {loading ? "Signing In..." : 
+            >
+              {loading ? "Signing In..." :
               "Sign In"}
             </Button>
           </form>
           <div>
-          <div className="flex flex-col items-center gap-2"> 
-            <div className="flex items-center justify-center gap-2 text-sm">
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <span className="text-muted-foreground">
                  Don&apos;t have an account?
               </span>
@@ -137,7 +137,7 @@ export default function LoginPage() {
               >
                 Sign up
               </Link>
-              <span className="text-muted-foreground">.</span>
+              <span className="text-muted-foreground hidden sm:inline">.</span>
               <Link
               href="/forgot-password"
               className="text-primary underline hover:text-primary/80 transition-colors"

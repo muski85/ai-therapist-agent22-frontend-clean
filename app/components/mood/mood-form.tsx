@@ -4,23 +4,21 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Loader2 } from "lucide-react";
-// import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/contexts/session-contexts";
+import { saveMood } from "@/lib/utils/mood-storage";
+
 interface MoodFormProps {
   onSuccess?: () => void;
 }
 
-  export function MoodForm({ onSuccess}:
-    MoodFormProps
-  ){
-    const [moodScore, setMoodScore] = useState(50);
-    const [isLoading, setIsLoading] = useState(false);
-    // const { toast } = useToast();
-    const { user, isAuthenticated, loading} = useSession();
-    const router = useRouter();
+export function MoodForm({ onSuccess}: MoodFormProps) {
+  const [moodScore, setMoodScore] = useState(50);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, isAuthenticated, loading} = useSession();
+  const router = useRouter();
 
-    const emotions = [
+  const emotions = [
     { value: 0, label: "😔", description: "Very Low" },
     { value: 25, label: "😕", description: "Low" },
     { value: 50, label: "😊", description: "Neutral" },
@@ -30,55 +28,49 @@ interface MoodFormProps {
 
   const currentEmotion =
     emotions.find((em) => Math.abs(moodScore - em.value) < 15) || emotions[2];
-  
-    const handleSubmit = async () => {
-      console.log("MoodForm: Starting submission");
-      console.log("MoodForm: Auth state:", { isAuthenticated, loading, user });
-      if(!isAuthenticated) {
-      console.log("MoodForm: User not authenticated");
-      // toast({
-      //   title: "Authentication required",
-      //   description: "Please log in to track your mood",
-      //   variant: "destructive",
-      // });
-      alert("Authetication required");
+
+  const handleSubmit = async () => {
+    if(!isAuthenticated) {
+      alert("Authentication required");
       router.push("/login");
       return;
-      }
+    }
 
-      try{
-        setIsLoading(true);
+    try {
+      setIsLoading(true);
+
+      // Save mood to localStorage
+      saveMood({
+        moodScore: moodScore,
+        userId: user?.id,
+      });
+
+      // Try to save to API as well
+      try {
         const token = localStorage.getItem("token");
-
-        console.log("Frontend token header:", `Bearer ${token}`);
-
-        const response = await fetch("/api/mood",{
+        await fetch("/api/mood", {
           method: "POST",
           headers: {
-            "Content-Type" : "application/json",
-            Authorization : `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({score: moodScore}),
         });
-
-        if (!response.ok){
-          throw new Error("Failed to track mood");
-        }
-        const data = await response.json();
-        alert("Mood track is succesfull")
-        onSuccess?.();
-      } catch (err: any){
-        alert(err.message || "Failed to track mood.");
-      }finally{
-        setIsLoading(false);
+      } catch (apiError) {
+        // API save failed, but localStorage succeeded
       }
-    }
 
+      alert("Mood tracked successfully!");
+      onSuccess?.();
+    } catch (err: any) {
+      alert(err.message || "Failed to track mood.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return(
-
     <div className="space-y-6 py-4">
-      {/* Emotion display */}
       <div className="text-center space-y-2">
         <div className="text-4xl">{currentEmotion.label}</div>
         <div className="text-sm text-muted-foreground">
@@ -86,7 +78,6 @@ interface MoodFormProps {
         </div>
       </div>
 
-      {/* Emotion slider */}
       <div className="space-y-4">
         <div className="flex justify-between px-2">
           {emotions.map((em) => (
@@ -111,37 +102,12 @@ interface MoodFormProps {
           step={1}
           className="py-4"
         />
-
-        </div>
-          <Button className="w-full"
-          onClick={handleSubmit}
-          disabled={isLoading || loading}
-          >{isLoading ? "Saving..." : "Save Mood"}
-          
-          </Button>
-
-
-
-
-
+      </div>
+      <Button className="w-full"
+        onClick={handleSubmit}
+        disabled={isLoading || loading}
+      >{isLoading ? "Saving..." : "Save Mood"}
+      </Button>
     </div>
-
-
-
-
-
   );
-
-
-
-
-
-
-
-
-
-
-
-
-
-  }
+}

@@ -49,3 +49,12 @@ next-env.d.ts
 # Backend logs
 backend/*.log
 backend/logs/
+
+# Documentation files (user guides)
+ACTIVITY_LOGGER_GUIDE.md
+ACTIVITY_LOGGER_SUCCESS.md
+DEBUG_ACTIVITY_LOGGER.md
+HOW_TO_TEST_ACTIVITY_LOGGER.md
+QUICK_FIX_GUIDE.md
+LUMINA_USER_GUIDE.md
+LUMINA_QUICK_GUIDE.md

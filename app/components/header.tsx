@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AudioWaveform, X, Menu, MessageCircle, LogOut } from "lucide-react";
+import { Zap, X, Menu, MessageCircle, LogOut } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { SignInButton } from "./auth/sign-in-button";
 import { useState } from "react";
@@ -15,8 +15,8 @@ export default function Header() {
   const pathname = usePathname();
   // console.log("Header: isAuthenticated =", isAuthenticated, "user =", user);
   const navItems = [
+    { href: "/about", label: "About Lumina" },
     { href: "/features", label: "Features" },
-    { href: "/about", label: "About Aura" },
   ];
 
   return (
@@ -28,16 +28,16 @@ export default function Header() {
             href="/"
             className="flex items-center space-x-2 transition-opacity hover:opacity-80"
           >
-            <AudioWaveform className="h-7 w-7 text-primary animate-pulse-gentle" />
+            <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-primary animate-pulse-gentle" />
             <div className="flex flex-col">
-              <span className="font-semibold text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                Aura 3.0
+              <span className="font-semibold text-base sm:text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Lumina
               </span>
             </div>
           </Link>
 
           {/* navitems */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <nav className="hidden md:flex items-center space-x-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.href; //check current page
@@ -45,13 +45,13 @@ export default function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground
+                    className={`px-3 lg:px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground
                    transition-colors relative group
                    ${
                      isActive
                        ? "text-primary bg-primary/10" // Active styles
                        : "text-muted-foreground hover:text-foreground" // Inactive styles
-                   }     
+                   }
                 `}
                   >
                     {item.label}
@@ -67,13 +67,13 @@ export default function Header() {
               })}
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <ThemeToggle />
               {isAuthenticated ? (
                 <>
                   <Button
                     asChild
-                    className="hidden md:flex gap-2 bg-primary/90 hover:bg-primary"
+                    className="hidden md:flex gap-2 bg-primary/90 hover:bg-primary text-sm"
                   >
                     <Link href="/dashboard">
                       <MessageCircle className="w-4 h-4 mr-1" />
@@ -83,10 +83,12 @@ export default function Header() {
                   <Button
                     variant="outline"
                     onClick={logout}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    size="sm"
+                    className="hidden sm:flex text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
-                    Sign out
+                    <span className="hidden lg:inline">Sign out</span>
+                    <span className="lg:hidden">Out</span>
                   </Button>
                 </>
               ) : (
@@ -111,8 +113,8 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-border">
-          <nav className="flex flex-col space-y-1 py-4">
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur">
+          <nav className="flex flex-col space-y-1 py-4 px-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return(
@@ -132,6 +134,28 @@ export default function Header() {
               </Link>
             );
             })}
+            {isAuthenticated && (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-3 text-sm font-medium bg-primary/90 hover:bg-primary text-primary-foreground rounded-md transition-colors flex items-center gap-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Start Chat
+                </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors flex items-center gap-2 text-left"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </button>
+              </>
+            )}
           </nav>
         </div>
       )}

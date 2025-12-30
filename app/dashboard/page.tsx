@@ -34,7 +34,10 @@ import { AnxietyGames } from "../components/games/anxiety-games";
 import { MoodForm } from "../components/mood/mood-form";
 import { ActivityLogger } from "../components/activity/activity-logger";
 import {useRouter} from "next/navigation";
-import {useSession} from "@/lib/contexts/session-contexts"
+import {useSession} from "@/lib/contexts/session-contexts";
+import { getTodayStats } from "@/lib/utils/activity-storage";
+import { getTodayAverageMood } from "@/lib/utils/mood-storage";
+import { getAllTimeTherapyStats } from "@/lib/utils/therapy-storage";
 
 
 
@@ -50,7 +53,25 @@ export default function DashboardPage() {
   const [showMoodModal, setShowMoodModal] = useState(false);
   const [isSavingMood, setIsSavingMood] = useState(false);
   const [showActivityLogger, setShowActivityLogger] = useState(false);
+  const [activityStats, setActivityStats] = useState({ total: 0, completed: 0, completionRate: 100, totalDuration: 0 });
+  const [moodScore, setMoodScore] = useState<number | null>(null);
+  const [therapySessions, setTherapySessions] = useState(0);
   const {user} = useSession();
+
+  // Load all stats when component mounts and when data changes
+  const loadAllStats = () => {
+    // Load activity stats
+    const stats = getTodayStats();
+    setActivityStats(stats);
+
+    // Load mood score
+    const avgMood = getTodayAverageMood();
+    setMoodScore(avgMood);
+
+    // Load therapy sessions
+    const therapyStats = getAllTimeTherapyStats();
+    setTherapySessions(therapyStats.totalSessions);
+  };
 
 
 
@@ -62,7 +83,7 @@ export default function DashboardPage() {
   const wellnessStats = [
     {
       title: "Mood Score",
-      value: "No data",
+      value: moodScore !== null ? `${moodScore}/100` : "No data",
       icon: Brain,
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
@@ -70,15 +91,15 @@ export default function DashboardPage() {
     },
     {
       title: "Completion Rate",
-      value: "100%",
+      value: `${activityStats.completionRate}%`,
       icon: Trophy,
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10",
-      description: "Perfect completion rate",
+      description: `${activityStats.completed} of ${activityStats.total} completed`,
     },
     {
       title: "Therapy Sessions",
-      value: "sessions",
+      value: therapySessions,
       icon: Heart,
       color: "text-rose-500",
       bgColor: "bg-rose-500/10",
@@ -86,11 +107,11 @@ export default function DashboardPage() {
     },
     {
       title: "Total Activities",
-      value: 80,
+      value: activityStats.total,
       icon: Activity,
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
-      description: "Planned for today",
+      description: "Logged for today",
     },
   ];
 
@@ -100,7 +121,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer); // clean up
+    loadAllStats(); // Load stats on mount
+
+    // Also refresh stats every 5 seconds to catch any changes
+    const statsTimer = setInterval(loadAllStats, 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(statsTimer);
+    };
   }, []);
 
   const handleMoodSubmit = async (data :{moodScore: number}) => {
@@ -123,7 +152,7 @@ export default function DashboardPage() {
     };
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
       <Container>
         <div className="flex flex-col gap-2">
           <motion.div
@@ -132,8 +161,8 @@ export default function DashboardPage() {
             transition={{ duration: 0.6 }}
             className="flex flex-col gap-2"
           >
-            <h1 className="text-3xl font-bold text-foreground">Welcome back, {user?.name || "Here"}</h1>
-            <p className="text-muted-foreground text-sm">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome back, {user?.name || "Here"}</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm">
               {currentTime.toLocaleDateString("en-US", {
                 weekday: "long",
                 month: "long",
@@ -144,21 +173,21 @@ export default function DashboardPage() {
         </div>
 
         {/* main grid layout */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Top Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
             {/* Quick Actions Card */}
             <Card className="border-primary/10 relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent" />
-              <CardContent className="p-6 relative">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-primary" />
+              <CardContent className="p-4 sm:p-6 relative">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">Quick Actions</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-semibold text-base sm:text-lg">Quick Actions</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Start your wellness journey
                       </p>
                     </div>
@@ -166,46 +195,46 @@ export default function DashboardPage() {
                   <Button
                     variant="default"
                     className={cn(
-                      "w-full justify-between items-center p-6 h-auto group/button",
+                      "w-full justify-between items-center p-4 sm:p-6 h-auto group/button",
                       "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90",
                       "transition-all duration-200 group-hover:translate-y-[-2px]"
                     )}
                     onClick={handleStartTherapy}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                        <MessageSquare className="w-4 h-4 text-white" />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center">
+                        <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-white">
+                        <div className="font-semibold text-sm sm:text-base text-white">
                           Start Therapy
                         </div>
-                        <div className="text-xs text-white/80">
+                        <div className="text-[10px] sm:text-xs text-white/80">
                           Begin a new session
                         </div>
                       </div>
                     </div>
                     <div className="opacity-0 group-hover/button:opacity-100 transition-opacity">
-                      <ArrowRight className="w-5 h-5 text-white" />
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                   </Button>
                   {/*heart grid*/}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <Button
                       variant="outline"
                       className={cn(
-                        "flex flex-col h-[120px] px-4 py-3 group/mood hover:border-primary/50",
+                        "flex flex-col h-[100px] sm:h-[120px] px-3 py-2 sm:px-4 sm:py-3 group/mood hover:border-primary/50",
                         "justify-center items-center text-center",
                         "transition-all duration-200 group-hover:translate-y-[-2px]"
                       )}
                       onClick={() => setShowMoodModal(true)}
                     >
-                      <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-2">
-                        <Heart className="w-5 h-5 text-rose-500" />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-1 sm:mb-2">
+                        <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
                       </div>
                       <div>
-                        <div className="font-medium text-sm">Track Mood</div>
-                        <div className="text-xs text-muted-foreground mt-0.5">
+                        <div className="font-medium text-xs sm:text-sm">Track Mood</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
                           How are you feeling?
                         </div>
                       </div>
@@ -215,18 +244,18 @@ export default function DashboardPage() {
                     <Button
                       variant="outline"
                       className={cn(
-                        "flex flex-col h-[120px] px-4 py-3 group/ai hover:border-primary/50",
+                        "flex flex-col h-[100px] sm:h-[120px] px-3 py-2 sm:px-4 sm:py-3 group/ai hover:border-primary/50",
                         "justify-center items-center text-center",
                         "transition-all duration-200 group-hover:translate-y-[-2px]"
                       )}
                       onClick={handleAICheckIn}
                     >
-                      <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-2">
-                        <BrainCircuit className="w-5 h-5 text-blue-500" />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-1 sm:mb-2">
+                        <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
                       </div>
                       <div>
-                        <div className="font-medium text-sm">Check-in</div>
-                        <div className="text-xs text-muted-foreground mt-0.5">
+                        <div className="font-medium text-xs sm:text-sm">Check-in</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
                           Quick wellness check
                         </div>
                       </div>
@@ -238,11 +267,11 @@ export default function DashboardPage() {
 
             {/* wellness metrics  */}
             <Card className="border-primary/10">
-              <CardHeader>
+              <CardHeader className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Today's Overview</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-base sm:text-lg">Today's Overview</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
                       Your wellness metrics for{" "}
                       {format(new Date(), "MMMM d, yyyy")}
                     </CardDescription>
@@ -250,29 +279,30 @@ export default function DashboardPage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    // onClick={fetchDailyStats}
-                    className="h-8 w-8"
+                    onClick={loadAllStats}
+                    className="h-7 w-7 sm:h-8 sm:w-8"
+                    title="Refresh stats"
                   >
-                    <Loader2 className={cn("h-4 w-4", "animate-spin")} />
+                    <Activity className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4")} />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   {wellnessStats.map((stat) => (
                     <div
                       key={stat.title}
                       className={cn(
-                        "p-4 rounded-lg transition-all duration-200 hover:scale-[1.02]",
+                        "p-3 sm:p-4 rounded-lg transition-all duration-200 hover:scale-[1.02]",
                         stat.bgColor
                       )}
                     >
-                      <div className="flex items-center gap-2">
-                        <stat.icon className={cn("w-5 h-5", stat.color)} />
-                        <p className="text-sm font-medium">{stat.title}</p>
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <stat.icon className={cn("w-4 h-4 sm:w-5 sm:h-5", stat.color)} />
+                        <p className="text-xs sm:text-sm font-medium">{stat.title}</p>
                       </div>
-                      <p className="text-2xl font-bold mt-2">{stat.value}</p>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-xl sm:text-2xl font-bold mt-1.5 sm:mt-2">{stat.value}</p>
+                      <p className="text-[10px] sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">
                         {stat.description}
                       </p>
                     </div>
@@ -285,32 +315,36 @@ export default function DashboardPage() {
             </Card>
           </div>
           {/* content grid for games */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-3 space-y-6 ">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               {/* anxiety games */}
                 <AnxietyGames/>
-             
+
             </div>
           </div>
         </div>
       </Container>
       {/* mood tracking modal */}
       <Dialog open={showMoodModal} onOpenChange={setShowMoodModal}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="w-[90vw] max-w-[425px] sm:w-full">
           <DialogHeader>
-            <DialogTitle>How are you feeling?</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-base sm:text-lg">How are you feeling?</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Move the slider to track your current mood
             </DialogDescription>
           </DialogHeader>
           {/* moodForm */}
-          <MoodForm onSuccess={() => setShowMoodModal(false)} />
+          <MoodForm onSuccess={() => {
+            setShowMoodModal(false);
+            loadAllStats(); // Refresh all stats after saving mood
+          }} />
         </DialogContent>
       </Dialog>
        {/* activity logger */}
        <ActivityLogger
        open={showActivityLogger}
        onOpenChange={setShowActivityLogger}
+       onActivitySaved={loadAllStats}
        />
     </div>
   );

@@ -42,6 +42,7 @@ import { ForestGame } from "@/app/components/games/forest-game";
 import { OceanWaves } from "@/app/components/games/ocean-waves";
 import { div } from "framer-motion/client";
 import { Badge } from "@/components/ui/badge";
+import { saveTherapySession } from "@/lib/utils/therapy-storage";
 import {
   createChatSession,
   sendChatMessage,
@@ -566,9 +567,21 @@ export default function TherapyPage() {
     if (isCompletingSession) return;
     setIsCompletingSession(true);
     try {
+      // Calculate session duration (estimate based on message count)
+      const estimatedDuration = Math.max(15, messages.length * 2); // At least 15 min, 2 min per message
+
+      // Save the therapy session to localStorage
+      saveTherapySession({
+        duration: estimatedDuration,
+        completed: true,
+        note: sessionTopics[sessionId || ''] || 'Therapy session completed',
+      });
+
       setShowNFTCelebration(true);
+      alert(`Session completed! Duration: ${estimatedDuration} minutes`);
     } catch (error) {
       console.error("Error completing session:", error);
+      alert("Failed to save session. Please try again.");
     } finally {
       setIsCompletingSession(false);
     }
@@ -854,6 +867,27 @@ export default function TherapyPage() {
                 </p>
               </div>
             </div>
+            {messages.length >= COMPLETION_THRESHOLD && (
+              <Button
+                onClick={handleCompleteSession}
+                disabled={isCompletingSession}
+                variant="default"
+                size="sm"
+                className="gap-2"
+              >
+                {isCompletingSession ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Completing...
+                  </>
+                ) : (
+                  <>
+                    <Trophy className="w-4 h-4" />
+                    Complete Session
+                  </>
+                )}
+              </Button>
+            )}
           </div>
           {/* Messages */}
           {messages.length === 0 ? (

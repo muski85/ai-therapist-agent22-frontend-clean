@@ -1,5 +1,5 @@
 "use client";
-//STOP2
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { TreePine, Volume2, VolumeX, Play, Pause } from "lucide-react";
@@ -54,13 +54,23 @@ export function ForestGame() {
           setProgress(
             ((MEDITATION_DURATION - newTime) / MEDITATION_DURATION) * 100
           );
+
+          // Stop audio when timer reaches 0
+          if (newTime <= 0) {
+            Object.values(audioElements).forEach((audio) => {
+              audio.pause();
+              audio.currentTime = 0;
+            });
+            setIsPlaying(false);
+          }
+
           return newTime;
         });
       }, 1000);
     }
 
     return () => clearInterval(timer);
-  }, [isPlaying, timeLeft]);
+  }, [isPlaying, timeLeft, audioElements]);
 
   const togglePlay = () => {
     if (isPlaying) {

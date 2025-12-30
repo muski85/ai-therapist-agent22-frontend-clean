@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 // import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "@/lib/contexts/session-contexts";
-import { logActivity } from "@/lib/api/activity";
+import { saveActivity } from "@/lib/utils/activity-storage";
 
 const activityTypes = [
   { id: "meditation", name: "Meditation" },
@@ -37,39 +37,63 @@ const activityTypes = [
 interface ActivityLoggerProps{
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onActivitySaved?: () => void; // Callback to refresh dashboard
 }
 
 
-export function ActivityLogger ({open, onOpenChange}
+export function ActivityLogger ({open, onOpenChange, onActivitySaved}
   :ActivityLoggerProps){
-  
+
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [duration, setDuration] = useState("");
   const [description, setDescription] = useState("");
+  const [completed, setCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const { toast } = useToast();
-  const { user, isAuthenticated, loading } = useSession();
+  const { user } = useSession();
 
   const handleSubmit = (e: React.FormEvent) => {
-    setTimeout(() => {
-      console.log({
+    e.preventDefault(); // Prevent form from refreshing page
+
+    // Validation
+    if (!type || !name || !duration) {
+      alert("Please fill in all required fields!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Save the activity to localStorage
+      const activity = saveActivity({
         type,
         name,
-        duration,
+        duration: parseInt(duration),
         description,
+        completed: completed,
+        userId: user?.id,
       });
 
-      // Reset Fields
+      // Reset form fields
       setType("");
       setName("");
       setDuration("");
       setDescription("");
-      setIsLoading(false);
+      setCompleted(false);
 
-      alert("Activity logged (mock)!");
+      // Call callback to refresh dashboard stats
+      if (onActivitySaved) {
+        onActivitySaved();
+      }
+
+      alert("Activity logged successfully!");
       onOpenChange(false); // Close modal
-    }, 1000);
+    } catch (error) {
+      console.error("Error saving activity:", error);
+      alert("Failed to save activity. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return(
@@ -120,36 +144,38 @@ export function ActivityLogger ({open, onOpenChange}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="How did it go?"
             />
-           
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="ghost">
+          </div>
+
+          <div className="flex items-center space-x-2 mt-4">
+            <input
+              type="checkbox"
+              id="completed"
+              checked={completed}
+              onChange={(e) => setCompleted(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+            />
+            <Label htmlFor="completed" className="cursor-pointer">
+              Mark as completed
+            </Label>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-4">
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" >
-              Save Activity
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Activity"
+              )}
             </Button>
-
           </div>
-          </div>     
         </form>
       </DialogContent>
     </Dialog>
-
-
-
-
-
-
-
-
-
-
   );
-
-
-
-
-
-
-
 }

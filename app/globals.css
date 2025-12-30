@@ -6,75 +6,75 @@
 
 @layer base {
   :root {
-    /* Calming light theme colors */
-    --background: 180 20% 99%;
-    --foreground: 200 8% 24%;
+    /* Moonlight Purple Light Theme */
+    --background: 250 100% 99%;
+    --foreground: 250 10% 15%;
 
-    --card: 180 20% 99%;
-    --card-foreground: 200 8% 24%;
+    --card: 250 100% 99%;
+    --card-foreground: 250 10% 15%;
 
-    --popover: 180 20% 99%;
-    --popover-foreground: 200 8% 24%;
+    --popover: 250 100% 99%;
+    --popover-foreground: 250 10% 15%;
 
-    /* Soft sage green as primary */
-    --primary: 150 30% 60%;
-    --primary-foreground: 150 40% 16%;
+    /* Deep Purple as primary */
+    --primary: 258 90% 66%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Gentle lavender as secondary */
-    --secondary: 250 20% 96%;
-    --secondary-foreground: 250 10% 30%;
+    /* Lavender as secondary */
+    --secondary: 250 100% 88%;
+    --secondary-foreground: 258 90% 30%;
 
-    /* Muted tones */
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 45%;
+    /* Muted purple tones */
+    --muted: 250 40% 96%;
+    --muted-foreground: 250 10% 45%;
 
-    /* Soft accent */
-    --accent: 180 25% 95%;
-    --accent-foreground: 200 8% 24%;
+    /* Soft blue accent */
+    --accent: 235 85% 82%;
+    --accent-foreground: 235 90% 25%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 200 10% 90%;
-    --input: 200 10% 90%;
-    --ring: 150 30% 60%;
+    --border: 250 30% 90%;
+    --input: 250 30% 92%;
+    --ring: 258 90% 66%;
 
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Soothing dark theme colors */
-    --background: 200 50% 3%;
-    --foreground: 210 20% 98%;
+    /* Moonlight Purple Dark Theme */
+    --background: 258 50% 5%;
+    --foreground: 250 20% 95%;
 
-    --card: 200 50% 3%;
-    --card-foreground: 210 20% 98%;
+    --card: 258 50% 7%;
+    --card-foreground: 250 20% 95%;
 
-    --popover: 200 50% 3%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 258 50% 7%;
+    --popover-foreground: 250 20% 95%;
 
-    /* Soft sage in dark mode */
-    --primary: 150 30% 70%;
-    --primary-foreground: 150 40% 16%;
+    /* Bright purple in dark mode */
+    --primary: 258 90% 70%;
+    --primary-foreground: 258 90% 10%;
 
-    /* Gentle purple in dark mode */
-    --secondary: 250 20% 20%;
-    --secondary-foreground: 210 20% 98%;
+    /* Lavender in dark mode */
+    --secondary: 250 60% 25%;
+    --secondary-foreground: 250 20% 95%;
 
-    /* Muted dark tones */
-    --muted: 200 50% 10%;
-    --muted-foreground: 210 20% 70%;
+    /* Muted purple dark tones */
+    --muted: 258 40% 15%;
+    --muted-foreground: 250 20% 70%;
 
-    /* Soft dark accent */
-    --accent: 200 50% 10%;
-    --accent-foreground: 210 20% 98%;
+    /* Soft blue accent dark */
+    --accent: 235 70% 20%;
+    --accent-foreground: 235 85% 82%;
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 250 20% 95%;
 
-    --border: 200 50% 10%;
-    --input: 200 50% 10%;
-    --ring: 150 30% 70%;
+    --border: 258 40% 18%;
+    --input: 258 40% 18%;
+    --ring: 258 90% 70%;
   }
 
   /* Apply fonts to base elements */
@@ -101,6 +101,18 @@
   /* Smooth transitions */
   * {
     @apply border-border transition-colors duration-200;
+  }
+
+  /* Responsive improvements */
+  @media (max-width: 640px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  /* Prevent horizontal scroll on mobile */
+  html, body {
+    overflow-x: hidden;
   }
 }
 
@@ -197,6 +209,13 @@
     transform: translateY(-8px);
   }
 
+  /* Responsive hover - disable on touch devices */
+  @media (hover: hover) {
+    .hover-lift:hover {
+      transform: translateY(-8px);
+    }
+  }
+
   .gentle-shadow {
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
@@ -215,6 +234,12 @@
 
   .font-code {
     font-family: var(--font-geist-mono), monospace;
+  }
+
+  /* Mobile-friendly tap targets */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
